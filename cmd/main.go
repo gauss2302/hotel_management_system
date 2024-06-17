@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"flag"
-	"github.com/gauss2302/hotel_management_system/api"
+	"github.com/gauss2302/hotel_management_system/api/userHandler"
 	"github.com/gauss2302/hotel_management_system/internal/database"
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -31,7 +31,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	userHandler := api.NewUserHandler(database.NewMongoUserStore(client))
+	userHandler := userHandler.NewUserHandler(database.NewMongoUserStore(client))
 
 	app := fiber.New()
 	apiV1 := app.Group("/api/v1")

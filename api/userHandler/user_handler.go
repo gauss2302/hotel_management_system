@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 	"errors"
+	"github.com/gauss2302/hotel_management_system/api"
 	"github.com/gauss2302/hotel_management_system/internal/database"
 	"github.com/gauss2302/hotel_management_system/internal/models"
 	"github.com/gofiber/fiber/v2"
@@ -39,7 +40,7 @@ func (h *UserHandler) HandleGetUser(c *fiber.Ctx) error {
 func (h *UserHandler) HandleGetUsers(c *fiber.Ctx) error {
 	users, err := h.userStore.GetUsers(c.Context())
 	if err != nil {
-		return ErrNotResourceNotFound("user")
+		return api.ErrNotResourceNotFound("user")
 	}
 	return c.JSON(users)
 }
@@ -48,7 +49,7 @@ func (h *UserHandler) HandlePostUser(c *fiber.Ctx) error {
 	var params models.CreateUserParams
 
 	if err := c.BodyParser(&params); err != nil {
-		return ErrBadRequest()
+		return api.ErrBadRequest()
 	}
 
 	if errors := params.Validate(); len(errors) > 0 {
@@ -76,7 +77,7 @@ func (h *UserHandler) HandlePutUser(c *fiber.Ctx) error {
 	)
 
 	if err := c.BodyParser(&params); err != nil {
-		return ErrBadRequest()
+		return api.ErrBadRequest()
 	}
 
 	filter := database.Map{"_id": userID}

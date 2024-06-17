@@ -4,12 +4,13 @@ import (
 	"context"
 	"errors"
 	"github.com/gauss2302/hotel_management_system/internal/database"
+	"github.com/gauss2302/hotel_management_system/internal/models"
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type UserHandler struct {
-	userStore database.UseStore
+	userStore database.UserStore
 }
 
 func NewUserHandler(userStore database.UserStore) *UserHandler {
@@ -41,4 +42,28 @@ func (h *UserHandler) HandleGetUsers(c *fiber.Ctx) error {
 		return ErrNotResourceNotFound("user")
 	}
 	return c.JSON(users)
+}
+
+func (h *UserHandler) HandlePostUser(c *fiber.Ctx) error {
+	var params models.CreateUserParams
+
+	if err := c.BodyParser(&params); err != nil {
+		return ErrBadRequest()
+	}
+
+	if errors := params.Validate(); len(errors) > 0 {
+		return c.JSON(errors)
+	}
+
+	user, err := models.NewUserFromParams(params)
+
+	if err != nil {
+		return err
+	}
+
+	insertedUser, err := h.userStore.InsertUser(c.Context(), user)
+	if err != nil {
+		return c.JSON(insertedUser)
+	}
+	return nil
 }

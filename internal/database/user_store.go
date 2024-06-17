@@ -12,7 +12,7 @@ const userColl = "users"
 
 type Map map[string]any
 
-type UseStore interface {
+type UserStore interface {
 	GetUserByID(context.Context, string) (*models.User, error)
 	GetUserByEmail(context.Context, string) (*models.User, error)
 	GetUsers(context.Context) ([]*models.User, error)

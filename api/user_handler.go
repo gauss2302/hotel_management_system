@@ -67,3 +67,34 @@ func (h *UserHandler) HandlePostUser(c *fiber.Ctx) error {
 	}
 	return nil
 }
+
+func (h *UserHandler) HandlePutUser(c *fiber.Ctx) error {
+
+	var (
+		params models.UpdateUserParams
+		userID = c.Params("id")
+	)
+
+	if err := c.BodyParser(&params); err != nil {
+		return ErrBadRequest()
+	}
+
+	filter := database.Map{"_id": userID}
+
+	if err := h.userStore.UpdateUser(c.Context(), filter, params); err != nil {
+		return err
+	}
+
+	return c.JSON(map[string]string{"updated": userID})
+
+}
+
+func (h *UserHandler) HandleDeleteUser(c *fiber.Ctx) error {
+	userID := c.Params("id")
+
+	if err := h.userStore.DeleteUser(c.Context(), userID); err != nil {
+		return err
+	}
+
+	return c.JSON(map[string]string{"deleted": userID})
+}

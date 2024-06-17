@@ -92,3 +92,11 @@ func InvalidCredentials(c *fiber.Ctx) error {
 		Msg:  "Invalid Credentials",
 	})
 }
+
+func getAuthUser(c *fiber.Ctx) (*models.User, error) {
+	user, ok := c.Context().UserValue("user").(*models.User)
+	if !ok {
+		return nil, fmt.Errorf("unauthorized")
+	}
+	return user, nil
+}
